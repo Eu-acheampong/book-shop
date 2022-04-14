@@ -1,15 +1,4 @@
 const fs = require("fs");
-const { Router } = require("express");
-const router = Router();
-const { checkAuth, timeStamp } = require("../middlewares/users.middleware");
-
-let users = [];
-
-fs.readFile("database.json", (err, data) => {
-  if (err) throw err;
-
-  users = JSON.parse(data);
-});
 
 // get all users
 const getAllUsers = (req, res) => {
@@ -22,7 +11,11 @@ const getUser = (req, res) => {
 
   // use only two equal signs because the userId is a string but the actual id in the array is a number
   const user = users.find((u) => u.id == userId);
-);
+  if (!user) {
+    return res.status(400).json({ sucess: false, message: "user not found" });
+  }
+  res.status(200).jason({ success: true, data: user });
+};
 
 // add new user
 const createUser = (req, res) => {
@@ -33,12 +26,10 @@ const createUser = (req, res) => {
   fs.writeFileSync("database.json", data);
 
   res.status(200).json(users);
-}
-router.post("/users", timeStamp,
-router.get("/users/:id", checkAuth, );
+};
 
 module.exports = {
-    getAllUsers,
-    getUser,
-    createUser,
-}
+  getAllUsers,
+  getUser,
+  createUser,
+};
